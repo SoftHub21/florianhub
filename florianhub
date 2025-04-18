@@ -1,0 +1,433 @@
+local SoftHub = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
+local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
+local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
+
+local Window = Fluent:CreateWindow({
+    Title = "Florian Hub " .. Fluent.Version,
+    SubTitle = "by Florian and s1p1er",
+    TabWidth = 100,
+    Size = UDim2.fromOffset(580, 460),
+    Acrylic = true, -- The blur may be detectable, setting this to false disables blur entirely
+    Theme = "Amethyst",
+    MinimizeKey = Enum.KeyCode.RightBracket -- Used when theres no MinimizeKeybind
+})
+
+--Fluent provides Lucide Icons https://lucide.dev/icons/ for the tabs, icons are optional
+local Tabs = {
+    Main = Window:AddTab({ Title = "Main", Icon = "" }),
+    Extra = Window:AddTab({ Title = "Extra", Icon = "" }),
+    Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
+}
+
+local Options = Fluent.Options
+
+do
+    Fluent:Notify({
+        Title = "Notification",
+        Content = "This is a notification",
+        SubContent = "SubContent", -- Optional
+        Duration = 5 -- Set to nil to make the notification not disappear
+    })
+
+----------------------------------------------------------------------------------------------------------
+
+    Tabs.Main:AddButton({
+        Title = "Anti-Goal",
+        Description = "Sometimes Buggy",
+        Callback = function()
+            Window:Dialog({
+                Title = "Are you sure?",
+                Content = "READ CAREFULLY! Stand in the middle of the goal and execute the script then ur gonna wanna say RTP in the chat and thats it REQ A BEEFY COMPUTER",
+                Buttons = {
+                    {
+                        Title = "Confirm",
+                        Callback = function()
+                            print("Confirmed the dialog.")
+                            local character = game.Players.LocalPlayer.Character
+local reachDistance = 16
+local bodyParts = {"LeftBoot", "RightBoot"}
+
+local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+-- Create the reach box that will represent the interaction range
+local reachBox = Instance.new("Part")
+reachBox.Size = Vector3.new(reachDistance * 15, reachDistance * 15, reachDistance * 15)
+reachBox.Position = humanoidRootPart.Position
+reachBox.Anchored = true
+reachBox.CanCollide = false
+reachBox.Transparency = 1
+reachBox.BrickColor = BrickColor.new("Bright blue")
+reachBox.Parent = workspace
+
+-- Function to find and interact with balls within reach distance
+local function findAndTouchBalls(folder)
+    for _, item in ipairs(folder:GetChildren()) do
+        -- Ensure the item is interactable (e.g., has the right attributes)
+        if (item:GetAttribute("networkOwner") or item:GetAttribute("lastTouch")) and item:IsA("BasePart") then
+            local distance = (item.Position - humanoidRootPart.Position).Magnitude
+            if distance <= reachDistance then
+                -- Move the item (e.g., ball) closer to the feet (instead of moving the boots)
+                item.CFrame = CFrame.new(character.LeftBoot.Position)  -- Or RightBoot, depending on interaction
+
+                -- Alternatively, you could apply a force or velocity to simulate kicking
+                -- item.Velocity = (item.Position - humanoidRootPart.Position).unit * 50  -- Example of pushing the ball
+
+            end
+        end
+    end
+    -- Recursively check child folders
+    for _, item in ipairs(folder:GetChildren()) do
+        if item:IsA("Folder") then
+            findAndTouchBalls(item)
+        end
+    end
+end
+
+-- Update the reach box and handle interactions each frame
+game:GetService("RunService").RenderStepped:Connect(function()
+    -- Ensure the reach box follows the humanoid root part
+    reachBox.Position = humanoidRootPart.Position
+
+    -- Set the size of the reach box to indicate the effective range
+    reachBox.Size = Vector3.new(reachDistance * 2, reachDistance * 2, reachDistance * 2)
+
+    -- Find and interact with balls in the workspace
+    findAndTouchBalls(workspace)
+end)
+
+                        end
+                    },
+                    {
+                        Title = "Cancel",
+                        Callback = function()
+                            print("Cancelled the dialog.")
+                        end
+                    }
+                }
+            })
+        end
+    })
+-------------------------------------------------------------------------------------------------------------------------------
+    Tabs.Main:AddButton({
+        Title = "Reach",
+        Description = "Very important button",
+        Callback = function()
+            Window:Dialog({
+                Title = "Are you sure?",
+                Content = "Saying RTP will cause it to break",
+                Buttons = {
+                    {
+                        Title = "Confirm",
+                        Callback = function()
+                            
+local character = game.Players.LocalPlayer.Character
+local reachDistance = 2
+local bodyParts = {"LeftBoot", "RightBoot"}
+
+local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+local reachBox = Instance.new("Part")
+reachBox.Size = Vector3.new(reachDistance * 2, reachDistance * 2, reachDistance * 2)
+reachBox.Position = humanoidRootPart.Position
+reachBox.Anchored = true
+reachBox.CanCollide = false
+reachBox.Transparency = 1
+reachBox.BrickColor = BrickColor.new("Bright blue")
+reachBox.Parent = workspace
+
+local function findAndTouchBalls(folder)
+    for _, item in ipairs(folder:GetChildren()) do
+        if (item:GetAttribute("networkOwner") or item:GetAttribute("lastTouch")) and item:IsA("BasePart") then
+            local distance = (item.Position - humanoidRootPart.Position).Magnitude
+            if distance <= reachDistance then
+                for _, partName in ipairs(bodyParts) do
+                    local bodyPart = character:FindFirstChild(partName)
+                    if bodyPart then
+                        bodyPart.CFrame = item.CFrame
+                        -- Make the boots invisible by setting their transparency to 1
+                        bodyPart.Transparency = 1  -- Fully transparent
+                    end
+                end
+            end
+        end
+        if item:IsA("Folder") then
+            findAndTouchBalls(item)
+        end
+    end
+end
+
+game:GetService("RunService").RenderStepped:Connect(function()
+    reachBox.Position = humanoidRootPart.Position
+    reachBox.Size = Vector3.new(reachDistance * 2, reachDistance * 2, reachDistance * 2)
+    for _, partName in ipairs(bodyParts) do
+        local bodyPart = character:FindFirstChild(partName)
+        if bodyPart then
+            bodyPart.Anchored = true
+            bodyPart.CanCollide = false
+            for _, constraint in ipairs(bodyPart:GetChildren()) do
+                if constraint:IsA("WeldConstraint") then
+                    constraint:Destroy()
+                end
+            end
+            -- Make sure the boots are invisible even when not interacting with other parts
+            bodyPart.Transparency = 1  -- Fully transparent
+        end
+    end
+    findAndTouchBalls(workspace.game)
+end)
+
+                        end
+                    },
+                    {
+                        Title = "Cancel",
+                        Callback = function()
+                            print("Cancelled the dialog.")
+                        end
+                    }
+                }
+            })
+        end
+    })
+
+--------------------------------------------------------------------------------------------------------------------------
+    
+
+    
+
+
+    
+
+   
+
+
+
+    local Keybind = Tabs.Settings:AddKeybind("Keybind", {
+        Title = "KeyBind",
+        Mode = "Toggle", -- Always, Toggle, Hold
+        Default = "LeftControl", -- String as the name of the keybind (MB1, MB2 for mouse buttons)
+
+        -- Occurs when the keybind is clicked, Value is `true`/`false`
+        Callback = function(Value)
+            print("Keybind clicked!", Value)
+        end,
+
+        -- Occurs when the keybind itself is changed, `New` is a KeyCode Enum OR a UserInputType Enum
+        ChangedCallback = function(New)
+            print("Keybind changed!", New)
+        end
+    })
+
+    -- OnClick is only fired when you press the keybind and the mode is Toggle
+    -- Otherwise, you will have to use Keybind:GetState()
+    Keybind:OnClick(function()
+        print("Keybind clicked:", Keybind:GetState())
+    end)
+
+    Keybind:OnChanged(function()
+        print("Keybind changed:", Keybind.Value)
+    end)
+
+    task.spawn(function()
+        while true do
+            wait(1)
+
+            -- example for checking if a keybind is being pressed
+            local state = Keybind:GetState()
+            if state then
+                print("Keybind is being held down")
+            end
+
+            if Fluent.Unloaded then break end
+        end
+    end)
+
+    Keybind:SetValue("MB2", "Toggle") -- Sets keybind to MB2, mode to Hold
+ 
+ 
+ ------------------------------------------------------------------------------------------------------------
+ 
+ 
+ Tabs.Main:AddButton({
+        Title = "Ball Control",
+        Description = "Hard To Use But OP",
+        Callback = function()
+            Window:Dialog({
+                Title = "RTP To Disable",
+                Content = "Players cant see its you only way they have of knowing its you is if you score",
+                Buttons = {
+                    {
+                        Title = "Confirm",
+                        Callback = function()
+local character = game.Players.LocalPlayer.Character or game.Players.LocalPlayer.CharacterAdded:Wait()
+local reachDistance = 6  
+local bodyParts = {"LeftBoot", "RightBoot", "HumanoidRootPart"} 
+
+local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+local runService = game:GetService("RunService")
+
+local boots = {}
+for _, partName in ipairs(bodyParts) do
+    local part = character:FindFirstChild(partName)
+    if part then
+        boots[partName] = part
+    end
+end
+
+
+local function shouldMoveBoots(itemPosition)
+    local distance = (itemPosition - humanoidRootPart.Position).Magnitude
+    return distance <= reachDistance
+end
+
+
+local function moveBootsToItem(targetPosition)
+    for _, partName in ipairs(bodyParts) do
+        local bodyPart = boots[partName]
+        if bodyPart then
+            -- Set boots' position to the target position
+            bodyPart.CFrame = CFrame.new(targetPosition)
+            bodyPart.Anchored = true  -- Anchor the boots to avoid physics interaction
+            bodyPart.CanCollide = false  -- Ensure no collision with other objects
+            bodyPart.Transparency = 1  -- Make boots invisible during interaction
+        end
+    end
+end
+
+
+local function cleanUpConstraints()
+    for _, partName in ipairs(bodyParts) do
+        local bodyPart = boots[partName]
+        if bodyPart then
+            -- Remove any constraints that may affect the boots' behavior
+            for _, constraint in ipairs(bodyPart:GetChildren()) do
+                if constraint:IsA("WeldConstraint") then
+                    constraint:Destroy()
+                end
+            end
+        end
+    end
+end
+
+
+local function findAndTouchBalls(folder)
+    for _, item in ipairs(folder:GetChildren()) do
+        -- Ensure we are interacting with valid parts
+        if item:IsA("BasePart") and (item:GetAttribute("networkOwner") or item:GetAttribute("lastTouch")) then
+            -- Only move boots if within reach
+            if shouldMoveBoots(item.Position) then
+                moveBootsToItem(item.Position)
+            end
+        end
+
+      
+        if item:IsA("Folder") then
+            findAndTouchBalls(item)
+        end
+    end
+end
+
+
+runService.RenderStepped:Connect(function()
+    
+    cleanUpConstraints()
+
+   
+    local gameFolder = workspace:FindFirstChild("game")
+    if gameFolder then
+        findAndTouchBalls(gameFolder)
+    end
+end)
+                        end
+                    },
+                    {
+                        Title = "Cancel",
+                        Callback = function()
+                            print("Cancelled the dialog.")
+                        end
+                    }
+                }
+            })
+        end
+    })
+
+    local Input = Tabs.Settings:AddInput("Input", {
+        Title = "Input",
+        Default = "Default",
+        Placeholder = "Placeholder",
+        Numeric = false, -- Only allows numbers
+        Finished = false, -- Only calls callback when you press enter
+        Callback = function(Value)
+            print("Input Altered:", Value)
+        end
+    })
+
+    Input:OnChanged(function()
+        print("Input updated:", Input.Value)
+    end)
+end
+
+------------------------------------------------------------------------------------------------------------------------
+
+Tabs.Extra:AddButton({
+        Title = "Infinite Stamina",
+        Description = "Run forever",
+        Callback = function()
+            Window:Dialog({
+                Title = "Are you sure?",
+                Content = "You cant revert back unless you rejoin!",
+                Buttons = {
+                    {
+                        Title = "Confirm",
+                        Callback = function()
+game:GetService("RunService").Heartbeat:Connect(function()
+            local stam = game:GetService("AssetService").controllers.movementController.stamina
+            stam.Value = 100
+            end)
+            
+end
+                    },
+                    {
+                        Title = "Cancel",
+                        Callback = function()
+                        end
+                    }
+                }
+            })
+        end
+    })
+-- Addons:
+-- SaveManager (Allows you to have a configuration system)
+-- InterfaceManager (Allows you to have a interface managment system)
+
+-- Hand the library over to our managers
+SaveManager:SetLibrary(Fluent)
+InterfaceManager:SetLibrary(Fluent)
+
+-- Ignore keys that are used by ThemeManager.
+-- (we dont want configs to save themes, do we?)
+SaveManager:IgnoreThemeSettings()
+
+-- You can add indexes of elements the save manager should ignore
+SaveManager:SetIgnoreIndexes({})
+
+-- use case for doing it this way:
+-- a script hub could have themes in a global folder
+-- and game configs in a separate folder per game
+InterfaceManager:SetFolder("FluentScriptHub")
+SaveManager:SetFolder("FluentScriptHub/specific-game")
+
+InterfaceManager:BuildInterfaceSection(Tabs.Settings)
+SaveManager:BuildConfigSection(Tabs.Settings)
+
+
+Window:SelectTab(1)
+
+Fluent:Notify({
+    Title = "RF24",
+    Content = "The script has been loaded.",
+    Duration = 8
+})
+
+-- You can use the SaveManager:LoadAutoloadConfig() to load a config
+-- which has been marked to be one that auto loads!
+SaveManager:LoadAutoloadConfig()
