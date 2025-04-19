@@ -44,21 +44,61 @@ local Toggle = Tab:CreateToggle({
    CurrentValue = false,
    Flag = "Toggle1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
    Callback = function(Value)
-   local character = game.Players.LocalPlayer.Character
-local reachDistance = 4
+    local character = game.Players.LocalPlayer.Character
+local reachDistance = 3
 local bodyParts = {"LeftBoot", "RightBoot"}
 
 local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
 
 local reachBox = Instance.new("Part")
-reachBox.Size = Vector3.new(reachDistance * 2, reachDistance * 2, reachDistance * 2)
+reachBox.Size = Vector3.new(reachDistance * 3, reachDistance * 3, reachDistance * 3)
 reachBox.Position = humanoidRootPart.Position
 reachBox.Anchored = true
 reachBox.CanCollide = false
-reachBox.Transparency = 0.5
+reachBox.Transparency = 1
 reachBox.BrickColor = BrickColor.new("Bright blue")
 reachBox.Parent = workspace
-   end,
+
+local function findAndTouchBalls(folder)
+    for _, item in ipairs(folder:GetChildren()) do
+        if (item:GetAttribute("networkOwner") or item:GetAttribute("lastTouch")) and item:IsA("BasePart") then
+            local distance = (item.Position - humanoidRootPart.Position).Magnitude
+            if distance <= reachDistance then
+                for _, partName in ipairs(bodyParts) do
+                    local bodyPart = character:FindFirstChild(partName)
+                    if bodyPart then
+                        bodyPart.CFrame = item.CFrame
+                        -- Make the boots invisible by setting their transparency to 1
+                        bodyPart.Transparency = 1  -- Fully transparent
+                    end
+                end
+            end
+        end
+        if item:IsA("Folder") then
+            findAndTouchBalls(item)
+        end
+    end
+end
+
+game:GetService("RunService").RenderStepped:Connect(function()
+    reachBox.Position = humanoidRootPart.Position
+    reachBox.Size = Vector3.new(reachDistance * 2, reachDistance * 2, reachDistance * 2)
+    for _, partName in ipairs(bodyParts) do
+        local bodyPart = character:FindFirstChild(partName)
+        if bodyPart then
+            bodyPart.Anchored = true
+            bodyPart.CanCollide = false
+            for _, constraint in ipairs(bodyPart:GetChildren()) do
+                if constraint:IsA("WeldConstraint") then
+                    constraint:Destroy()
+                end
+            end
+            -- Make sure the boots are invisible even when not interacting with other parts
+            bodyPart.Transparency = 1  -- Fully transparent
+        end
+    end
+    findAndTouchBalls(workspace.game)
+end)
 })
 
 
