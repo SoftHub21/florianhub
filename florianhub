@@ -69,7 +69,7 @@ local function findAndTouchBalls(folder)
                     if bodyPart then
                         bodyPart.CFrame = item.CFrame
                         -- Make the boots invisible by setting their transparency to 1
-                        bodyPart.Transparency = 1  -- Fully transparent
+                        bodyPart.Transparency = 0  -- Fully transparent
                     end
                 end
             end
@@ -94,7 +94,7 @@ game:GetService("RunService").RenderStepped:Connect(function()
                 end
             end
             -- Make sure the boots are invisible even when not interacting with other parts
-            bodyPart.Transparency = 1  -- Fully transparent
+            bodyPart.Transparency = 0  -- Fully transparent
         end
     end
     findAndTouchBalls(workspace.game)
