@@ -56,7 +56,7 @@ reachBox.Position = humanoidRootPart.Position
 reachBox.Anchored = true
 reachBox.CanCollide = false
 reachBox.Transparency = 1
-reachBox.BrickColor = BrickColor.new("Medium stone grey")
+reachBox.BrickColor = BrickColor.new("Bright blue")
 reachBox.Parent = workspace
 
 local function findAndTouchBalls(folder)
